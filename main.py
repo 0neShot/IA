@@ -4,11 +4,8 @@ from motor_controll import set_motor, stop_all
 from PID import pid_controller, getSensorValue, isBlackDetected
 import socket
 import network
-
-threshold = 5000
-
-ds = pydualsense()
-ds.init()
+from config import Config
+import PiConnectionPC
 
 def steerMotorsPID(correction):
     base_speed = 0.2
@@ -25,13 +22,25 @@ def steerMotorsPID(correction):
 
 def mainDrive():
     # Hauptschleife
+    initPiConnection()
+    while True:
+        # Accept a connection from a client
+        client, addr = connection.accept()
+        print(f'Connected to {addr}')
+        while True:
+            # Receive data from the client
+            data = client.recv(1024)
+            if data:
+                # Print the data to the console
+                print(data)
+    
     while True:
         sensor_value = getSensorValue()
         print(sensor_value)
         setpoint = 1
         
         
-        if isBlackDetected(threshold):
+        if isBlackDetected(Config.TRESHOLD):
             setpoint = 1  # Sollwert ist die Linie
         else:
             setpoint = 0  # Keine Linie erkannt
@@ -49,4 +58,5 @@ except KeyboardInterrupt:
     stop_all()
 finally:
     ds.close()  # Close the controller connection
+
 
