@@ -1,22 +1,13 @@
 import socket
 import network
+import settings
 from time import sleep
-from machine import Pin as pin
- 
-ssid = 'Mrsh77'
-password = '1m77n2299215r77#'
- 
-in1 = pin(16,pin.OUT)
-in2 = pin(17,pin.OUT)
-in3 = pin(18,pin.OUT)
-in4 = pin(19,pin.OUT)
+from machine import Pin
 
-ENA = pin(20,pin.OUT)
-ENB = pin(21,pin.OUT)
-
-ENA.value(1)
-ENB.value(1)
-
+def init():
+    settings.ssid.append( '')
+    settings.password = '2s65Y88+'
+    settings.led = machine.Pin("LED", machine.Pin.OUT)
 
 #This Function moves the Robot forward
 def forward():
@@ -65,6 +56,7 @@ def connect():
         sleep(1)
     ip = wlan.ifconfig()[0]
     print(f'Connected on {ip}')
+    led.on()
     return ip
  
 def open_socket(ip):
@@ -76,7 +68,7 @@ def open_socket(ip):
     return connection
  
  
-try:
+def mainConnect():
     ip = connect()
     connection = open_socket(ip)
     while True:
