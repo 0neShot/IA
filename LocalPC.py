@@ -2,9 +2,10 @@ from pydualsense import pydualsense
 import socket
 from time import sleep
 
+
 # Set up the client socket
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#client_socket.connect(('192.168.1.233', 80))  # Connect to the server
+client_socket.connect(('172.20.10.8', 80))  # Connect to the server
 
 def button_pressed(cmd):
     #print(f"{cmd} button pressed")
@@ -36,3 +37,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
