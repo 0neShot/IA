@@ -1,11 +1,7 @@
 from time import sleep
 from machine import Pin, ADC, Timer
 from motor_controll import set_motor, stop_all
-
-# PID-Koeffizienten
-Kp = 1.0
-Ki = 0.1
-Kd = 0.05
+from config import Config
 
 # PID Variablen
 previous_error = 0
@@ -14,25 +10,12 @@ integral_limit = 10
 dt = 0.01
 
 "Sensor"
-groveled = Pin(18, Pin.OUT)
-boardled = Pin(25, Pin.OUT)
-adc = ADC(Pin(28))
-
-timer = Timer()
-
-def blink(timer):
-    groveled.toggle()
-    
-timer.init(freq=2.5, mode=Timer.PERIODIC, callback=blink)
-
-# Definiere eine Schwelle für die Erkennung von schwarz
-threshold = 5000
-
-lf = Pin(20, Pin.IN)
+boardled = Pin(Config.ONBORDLEDPIN, Pin.OUT)
+adc = ADC(Pin(Config.ANALOGSENSORPIN))
 
 def getSensorValue():
     rawValue = adc.read_u16()
-    if (rawValue < threshold):
+    if (rawValue < Config.TRESHOLD):
         boardled.on()
     else:
         boardled.off()
@@ -43,17 +26,15 @@ def getSensorValue():
 def isBlackDetected(threshold):
     sensor_value = getSensorValue()
     return sensor_value >= threshold
-
     
 # Anpassungsrate der PID-Koeffizienten
 adaptation_rate = 0.01
 
 def adapt_pid_coefficients(error):
-    global Kp, Ki, Kd
     # Passen Sie die Koeffizienten basierend auf der Fehlerhistorie an
-    Kp += adaptation_rate * abs(error)
-    Ki += adaptation_rate * error
-    Kd += adaptation_rate * (error - previous_error)
+    Config.KP += adaptation_rate * abs(error)
+    Config.KI += adaptation_rate * error
+    Config.KD += adaptation_rate * (error - previous_error)
 
 def pid_controller(setpoint, sensor_value):
     global previous_error, integral
@@ -62,16 +43,16 @@ def pid_controller(setpoint, sensor_value):
     error = setpoint - sensor_value
 
     # Proportionaler Anteil
-    P = Kp * error
+    P = Config.KP * error
 
     # Integral Anteil mit Anti-Windup
     integral += error * dt
     integral = max(min(integral, integral_limit), -integral_limit)
-    I = Ki * integral
+    I = Config.KI * integral
 
     # Differentialer Anteil
     derivative = (error - previous_error) / dt
-    D = Kd * derivative
+    D = Config.KD * derivative
 
     # Regelgröße berechnen
     output = P + I + D
@@ -94,4 +75,3 @@ def steerMotorsPID(correction):
 
     set_motor('motor1', left_speed * 100)
     set_motor('motor2', right_speed * 100)
-    
