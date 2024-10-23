@@ -1,13 +1,17 @@
 class Config:
     "Constants for Communication. Do not change!"
-    SPEED = 1
-    ANGLE = 2
-    STOPALL = 3
+    DRIVE = 1
+    STOPALL = 2
     
-    "Constants for Robot"
+    "Definitions for Robot"
     TRESHOLD = 5000
     ANALOGSENSORPIN = 28
     ONBORDLEDPIN = 25
+    
+    "Motor Definitions"
+    PWMFREQUENCY = 40
+    TURNSPEED = 20 #% of maximum turn speed
+    DEGREES_PER_SECOND = 90 # Supposed turn angle per second in degrees
     
     "Constants for PID"
     KP = 1.0

@@ -1,5 +1,6 @@
 from machine import Pin, PWM
 from time import sleep
+from config import Config
 
 # Motorsteuerungspins definieren
 motor_pins = {
@@ -13,13 +14,9 @@ motor_pins = {
 pwm1 = PWM(Pin(13))
 pwm2 = PWM(Pin(11))
 
-# PWM-Frequenz auf 48Hz setzen
-pwm1.freq(40)
-pwm2.freq(40)
-
-# Konstante für die Drehgeschwindigkeit
-TURN_SPEED = 20  # % der maximalen Geschwindigkeit
-DEGREES_PER_SECOND = 90  # Annahme: 90 Grad pro Sekunde Drehgeschwindigkeit
+# PWM-Frequenz setzen
+pwm1.freq(Config.PWMFREQUENCY)
+pwm2.freq(Config.PWMFREQUENCY)
 
 def set_motor(motor, speed):
     """
@@ -34,9 +31,6 @@ def set_motor(motor, speed):
     
     # Begrenze die Geschwindigkeit auf einen Bereich von -100 bis 100
     speed = max(-100, min(100, speed))
-
-    forward_pin = motor_pins[f'{motor}_forward']
-    backward_pin = motor_pins[f'{motor}_backward']
 
     if speed > 0:
         # Vorwärtslauf
@@ -69,15 +63,14 @@ def stop_all():
     pwm1.duty_u16(0)
     pwm2.duty_u16(0)
 
-def move(direction, speed):
+def move(speed):
     """Bewegt beide Motoren in eine Richtung."""
-    set_motor('motor1', direction, speed)
-    set_motor('motor2', direction, speed)
+    set_motor('motor1', speed)
+    set_motor('motor2', speed)
     
 def turn(direction, speed):
     """
     Dreht den Roboter.
-    
     :param direction: "left" oder "right"
     :param speed: Geschwindigkeit (0 bis 100)
     """
@@ -91,17 +84,24 @@ def turn(direction, speed):
 def turn_angle(angle):
     """
     Dreht den Roboter um einen bestimmten Winkel.
-    
     :param angle: Der Winkel, um den der Roboter gedreht werden soll (in Grad).
     """
     # Berechne die Zeit, die benötigt wird, um den gewünschten Winkel zu drehen
-    time_to_turn = abs(angle) / DEGREES_PER_SECOND
+    time_to_turn = abs(angle) / Config.DEGREESPERSECOND
     
     if angle > 0:
-        turn('left', TURN_SPEED)  # Drehung nach links
+        turn('left', Config.TURNSPEED)  # Drehung nach links
     else:
-        turn('right', TURN_SPEED)  # Drehung nach rechts
+        turn('right', Config.TURNSPEED)  # Drehung nach rechts
     
     sleep(time_to_turn)  # Warte die erforderliche Zeit
     stop_all()  # Stoppe die Motoren nach dem Drehen
+    
+def drive(angle, speed):
+    if (angle > 0):
+         set_motor('motor1', speed)
+         set_motor('motor2', speed * (1 - angle / 128))
+    else:
+         set_motor('motor1', speed * (1 - angle / 128))
+         set_motor('motor1', speed)
 
