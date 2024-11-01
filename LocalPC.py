@@ -13,9 +13,10 @@ def main():
     # Initialize Connection
     client = Client(HOST, PORT)
     # Initialize Dualsense Controller
-    dualsense = Dualsense(client)
+    dualsense = Dualsense(client, None)
     #Create GUI
-    gui = Gui(client)
+    gui = Gui(client, dualsense)
+    dualsense.gui = gui
     gui.mainloop()
 
     try:

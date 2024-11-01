@@ -7,9 +7,10 @@ set_appearance_mode("dark")
 set_default_color_theme("blue")
 
 class Gui(CTk):
-    def __init__(self, client):
+    def __init__(self, client, dualsense):
         super().__init__()
         self.client = client
+        self.dualsense = dualsense
         
         self.title("Robot Controller")
         self.setup_ui()
@@ -56,7 +57,9 @@ class Gui(CTk):
         self.btn_start.configure(fg_color="Green")
         self.btn_start.pack(fill=BOTH, expand=1, pady=10)
         
-        self.btn_controller_input = CTkButton(self.main_frame, text="Linienfollower Start", command=self.controller_input_clicked)
+        self.btn_controller_input = CTkButton(self.main_frame, text="Controller Input", command=self.controller_input_clicked)
+        self.controller_input_value = BooleanVar(value="False")
+        self.btn_controller_input.configure(fg_color="Red")
         self.btn_controller_input.pack(fill=BOTH, expand=1, pady=10)
 
     # Placeholder-Method for event managment
@@ -67,13 +70,21 @@ class Gui(CTk):
         pass
 
     def btn_stop_all_clicked(self):
+        self.dualsense.controller_input = False
         self.client.sendCommand(Config.STOPALL)
+        self.btn_controller_input.configure(fg_color="Red")
 
     def start_clicked(self):
         self.client.sendCommand(Config.STARTPID)
     
     def controller_input_clicked(self):
-        pass
+        self.controller_input_value = not self.controller_input_value
+        if (self.controller_input_value):
+            self.btn_controller_input.configure(fg_color="Green")
+            self.dualsense.controller_input = True
+        else:
+            self.btn_controller_input.configure(fg_color="Red")
+            self.dualsense.controller_input = False
     
 
 def dontclosewindow():
