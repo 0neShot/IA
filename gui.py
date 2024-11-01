@@ -59,7 +59,7 @@ class Gui(CTk):
         
         self.btn_controller_input = CTkButton(self.main_frame, text="Controller Input", command=self.controller_input_clicked)
         self.controller_input_value = BooleanVar(value="False")
-        self.btn_controller_input.configure(fg_color="Red")
+        self.btn_controller_input.configure(fg_color="Orange")
         self.btn_controller_input.pack(fill=BOTH, expand=1, pady=10)
 
     # Placeholder-Method for event managment
@@ -83,7 +83,7 @@ class Gui(CTk):
             self.btn_controller_input.configure(fg_color="Green")
             self.dualsense.controller_input = True
         else:
-            self.btn_controller_input.configure(fg_color="Red")
+            self.btn_controller_input.configure(fg_color="Orange")
             self.dualsense.controller_input = False
     
 
