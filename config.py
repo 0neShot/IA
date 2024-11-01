@@ -2,11 +2,17 @@ class Config:
     "Constants for Communication. Do not change!"
     DRIVE = 1
     STOPALL = 2
+    STARTPID = 3
     
     "Definitions for Robot"
-    TRESHOLD = 5000
+    TRESHOLD = 5000 #Threshold for analog light sensor
     ANALOGSENSORPIN = 28
     ONBORDLEDPIN = 25
+    IRSENSOR1 = 19 #Pins declared from left to right
+    IRSENSOR2 = 18
+    IRSENSOR3 = 17
+    IRSENSOR4 = 16
+    IRSENSOR5 = 15
     
     "Motor Definitions"
     PWMFREQUENCY = 40
