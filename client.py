@@ -1,4 +1,5 @@
 import socket, logging
+from time import sleep
 
 class Client:
     def __init__(self, host, port):
@@ -15,9 +16,10 @@ class Client:
     def sendCommand(self, action, *parameters):
         message = str(action)
         if parameters is not None:
-            message += ";" + ";".join(str(param) for param in parameters) + '\n'
+            message += ";" + ";".join(str(param) for param in parameters) + '!'
         if not self.connected:
             logging.warning(f"Failed to send '{message}' because bot is not connected")
             return
         logging.info(f'Sending "{message}"')
         self.socket.send(message.encode())
+        sleep(0.01)

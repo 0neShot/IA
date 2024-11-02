@@ -1,21 +1,20 @@
-import socket, logging
 from config import Config
-from time import sleep
 from gui import Gui
 from client import Client
 from dualsense import Dualsense
 import logging
 
-HOST = "192.168.178.1"
-PORT = 23
+HOST = "192.168.137.117"
+PORT = 80
     
 def main():
     # Initialize Connection
     client = Client(HOST, PORT)
     # Initialize Dualsense Controller
     dualsense = Dualsense(client, None)
-    #Create GUI
+    # Create GUI
     gui = Gui(client, dualsense)
+    # Pass gui to dualsense to update window on events
     dualsense.gui = gui
     gui.mainloop()
 

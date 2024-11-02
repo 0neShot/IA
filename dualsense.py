@@ -1,6 +1,7 @@
 from pydualsense import *
 from client import Client
 from config import Config
+from time import sleep
 
 class Dualsense(pydualsense):
     controller_input = False
@@ -16,13 +17,14 @@ class Dualsense(pydualsense):
             self.setRightMotor(100) # Vibrate 
             sleep(1)
             self.setRightMotor(0)
-            Dualsense.controller_input = True
+            Dualsense.controller_input = True # Enable Controller input so Values are send to client
         else:
             Dualsense.controller_input = False
             
         self.triangle_pressed += self.trianglePressed
         self.left_joystick_changed += self.joystickChanged
         self.r2_changed += self.r2Changed
+        self.circle_pressed += self.circlePressed
 
     def joystickChanged(self, stateX, stateY):
         """Callback für das Verschieben des Joysticks"""
@@ -32,11 +34,15 @@ class Dualsense(pydualsense):
     def trianglePressed(self, state):
         """Callback für das Drücken der 'Triangle'-Taste"""
         if (self.controller_input):
-            self.controller_input = False
             self.client.sendCommand(Config.STOPALL)
+            self.controller_input = False
             self.gui.controller_input_clicked()
         
     def r2Changed(self, state):
         """Callback für das Ändern des R2-Triggers"""
         if (self.controller_input):
             self.client.sendCommand(Config.DRIVE, self.state.LX, state)
+    
+    def circlePressed(self, state):
+        if (self.controller_input):
+            self.client.sendCommand(Config.STARTPID)

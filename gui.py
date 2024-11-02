@@ -24,7 +24,7 @@ class Gui(CTk):
         
         self.lbl_speed = CTkLabel(self.main_frame, text="Geschwindigkeit (in %)")
         self.lbl_speed.pack()
-        self.speed = StringVar(value="10")
+        self.speed = IntVar(value="10")
         self.sb_speed = CTkEntry(self.main_frame, textvariable=self.speed)
         self.sb_speed.pack(pady=10)
         
@@ -48,6 +48,10 @@ class Gui(CTk):
         self.d_value = StringVar(value=Config.KD)
         self.sb_d_value = CTkEntry(self.buttom_frame, textvariable=self.d_value, justify=CENTER)
         self.sb_d_value.pack(pady=0)
+        
+        self.btn_save = CTkButton(self.buttom_frame, text="Save", command=self.update_variables)
+        self.btn_save.configure(fg_color="Grey")
+        self.btn_save.pack(fill=BOTH, expand=1, pady=10)
 
         self.btn_stop_all = CTkButton(self.main_frame, text="Kompletter Stop", command=self.btn_stop_all_clicked)
         self.btn_stop_all.configure(fg_color="Red")
@@ -70,8 +74,8 @@ class Gui(CTk):
         pass
 
     def btn_stop_all_clicked(self):
-        self.dualsense.controller_input = False
         self.client.sendCommand(Config.STOPALL)
+        self.dualsense.controller_input = False
         self.btn_controller_input.configure(fg_color="Red")
 
     def start_clicked(self):
@@ -83,9 +87,11 @@ class Gui(CTk):
             self.btn_controller_input.configure(fg_color="Green")
             self.dualsense.controller_input = True
         else:
-            self.btn_controller_input.configure(fg_color="Orange")
+            self.btn_controller_input.configure(fg_color="Red")
             self.dualsense.controller_input = False
     
+    def update_variables(self):
+        pass
 
 def dontclosewindow():
     print("Dont close this window, stop the program :(")

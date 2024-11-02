@@ -2,21 +2,19 @@ from machine import Pin, PWM
 from time import sleep
 from config import Config
 
-# Motorsteuerungspins definieren
-motor_pins = {
-    'motor1_forward': Pin(13, Pin.OUT),
-    'motor1_backward': Pin(12, Pin.OUT),
-    'motor2_forward': Pin(11, Pin.OUT),
-    'motor2_backward': Pin(10, Pin.OUT)
-}
+
+motor1_forward = Pin(Config.MOTOR_PINS[0], Pin.OUT)
+motor1_backward = Pin(Config.MOTOR_PINS[1], Pin.OUT)
+motor2_forward = Pin(Config.MOTOR_PINS[2], Pin.OUT)
+motor2_backward = Pin(Config.MOTOR_PINS[3], Pin.OUT)
 
 # PWM für die Motoren festlegen
-pwm1 = PWM(Pin(13))
-pwm2 = PWM(Pin(11))
+pwm1 = PWM(Config.MOTOR_PINS[0])
+pwm2 = PWM(Config.MOTOR_PINS[2])
 
 # PWM-Frequenz setzen
-pwm1.freq(Config.PWMFREQUENCY)
-pwm2.freq(Config.PWMFREQUENCY)
+pwm1.freq(Config.PWM_FREQUENCY)
+pwm2.freq(Config.PWM_FREQUENCY)
 
 def set_motor(motor, speed):
     """
@@ -26,8 +24,8 @@ def set_motor(motor, speed):
     :param speed: Geschwindigkeit (0 bis 100)
     """
     
-    forward_pin = motor_pins[f'{motor}_forward']
-    backward_pin = motor_pins[f'{motor}_backward']
+    forward_pin = motor1_forward if motor == 'motor1' else motor2_forward
+    backward_pin = motor1_backward if motor == 'motor1' else motor2_backward
     
     # Begrenze die Geschwindigkeit auf einen Bereich von -100 bis 100
     speed = max(-100, min(100, speed))
@@ -58,8 +56,11 @@ def set_motor(motor, speed):
 
 def stop_all():
     """Stoppt beide Motoren."""
-    for pin in motor_pins.values():
-        pin.off()
+    motor1_forward.off()
+    motor1_backward.off()
+    motor2_forward.off()
+    motor2_backward.off()
+    
     pwm1.duty_u16(0)
     pwm2.duty_u16(0)
 
