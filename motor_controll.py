@@ -103,6 +103,6 @@ def drive(angle, speed):
          set_motor('motor1', speed)
          set_motor('motor2', speed * (1 - angle / 128))
     else:
-         set_motor('motor1', speed * (1 - angle / 128))
-         set_motor('motor1', speed)
+         set_motor('motor1', speed * (1 + angle / 128))
+         set_motor('motor2', speed)
 

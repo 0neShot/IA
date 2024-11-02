@@ -29,7 +29,10 @@ class Dualsense(pydualsense):
     def joystickChanged(self, stateX, stateY):
         """Callback für das Verschieben des Joysticks"""
         if (self.controller_input):
-            self.client.sendCommand(Config.DRIVE, stateX, self.state.R2)
+            if (self.state.L2 > 10):
+                self.client.sendCommand(Config.DRIVE, stateX, -1 * self.state.R2)
+            else:
+                self.client.sendCommand(Config.DRIVE, stateX, self.state.R2)
 
     def trianglePressed(self, state):
         """Callback für das Drücken der 'Triangle'-Taste"""
@@ -41,7 +44,10 @@ class Dualsense(pydualsense):
     def r2Changed(self, state):
         """Callback für das Ändern des R2-Triggers"""
         if (self.controller_input):
-            self.client.sendCommand(Config.DRIVE, self.state.LX, state)
+            if (self.state.L2 > 10):
+                self.client.sendCommand(Config.DRIVE, self.state.LX, -1 * state)
+            else:
+                self.client.sendCommand(Config.DRIVE, self.state.LX, state)
     
     def circlePressed(self, state):
         if (self.controller_input):
