@@ -47,17 +47,30 @@ class PiConnection:
         print(f"Parsing message: {message}")
         parts = message.split(";")
         try:
+            # Überprüfen, ob die Nachricht überhaupt eine Aktion enthält
+            if not parts or len(parts[0].strip()) == 0:
+                print("Fehler: Die Nachricht enthält keine gültige Aktion.")
+                return None, []  # Rückgabe von None für die Aktion und einer leeren Liste
+
             action = int(parts[0])  # Umwandlung des ersten Teils in einen Integer
+
             # Überprüfen, ob weitere Parameter vorhanden sind
             if len(parts) > 1:
-                numbers = [int(num) for num in parts[1:] if num.strip().isdigit()]  # Umwandlung der weiteren Teile in Integers
+                numbers = []
+                for num in parts[1:]:
+                    num = num.strip()
+                    if num.isdigit() or (num.startswith("-") and num[1:].isdigit()):  # Negative Zahlen abfangen
+                        numbers.append(int(num))
+                    else:
+                        print(f"Warnung: Ungültiger Parameter '{num}' in Nachricht: {message}")
+                return action, numbers
             else:
-                numbers = []  # Leere Liste zurückgeben, wenn keine Parameter vorhanden sind
-            return action, numbers
+                print("Hinweis: Keine zusätzlichen Parameter in Nachricht.")
+                return action, []
         except ValueError as e:
-            print(f"ValueError while parsing message: {e} for data: {message}")
-            return None, []  # Rückgabe von None für die Aktion und einer leeren Liste für die Zahlen
-
+            print(f"ValueError beim Parsen der Nachricht: {e} für Daten: {message}")
+            return None, []
+    
     def start_listening(self):
         try:
             self.init_connection()
@@ -104,14 +117,18 @@ class PiConnection:
     def extract_message(self, buffer):
         # Teile den Puffer an der ersten Stelle, an der ein Ausrufezeichen gefunden wird
         parts = buffer.split("!")
-        # Die vollständige Nachricht ist alles bis zum letzten Ausrufezeichen
         if len(parts) > 1:
-            message = "!".join(parts[:-1])  # Nimm alles bis auf das letzte Element
-            remaining = parts[-1]  # Das letzte Element bleibt im Puffer
+            # Nachricht bis zum letzten "!" als vollständige Nachricht betrachten
+            message = parts[0]  # Nimm das erste Segment als Nachricht
+            remaining = "!".join(parts[1:])  # Rest bleibt im Puffer
+            print(f"Extrahierte Nachricht: {message} mit verbleibendem Puffer: {remaining}")
         else:
-            message = buffer  # Wenn es kein Ausrufezeichen gibt, ist die gesamte Pufferinhalt die Nachricht
-            remaining = ""  # Nichts bleibt übrig
+            message = ""
+            remaining = buffer  # Kein "!" im Buffer, nichts extrahieren
+            print(f"Unvollständige Nachricht: nur Puffer '{buffer}'")
+
         return message, remaining
+
     
     def execute_action(self, action, numbers):
         if action == Config.DRIVE:
