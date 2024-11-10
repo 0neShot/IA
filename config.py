@@ -18,9 +18,9 @@ class Config:
     
     "Constants for PID"
     KP = 1.0
-    KI = 0.1
-    KD = 0.05
-    MAX_SPEED = 50 # % of maximum used speed for PID
+    KI = 0
+    KD = 0.0
+    MAX_SPEED = 10 # % of maximum used speed for PID (0-100)
     
     "Wifi Connection Settings"
     SSID = 'DESKTOP-12QN0M'

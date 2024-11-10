@@ -4,7 +4,7 @@ from client import Client
 from dualsense import Dualsense
 import logging
 
-HOST = "192.168.137.104"
+HOST = "192.168.137.176"
 PORT = 80
     
 def main():

@@ -1,4 +1,5 @@
 from machine import Pin
+from time import sleep
 from motor_controll import set_motor, stop_all
 from config import Config
 
@@ -66,18 +67,19 @@ class PIDController:
     def steer_motors_pid(self, correction):
         """Steuert die Motoren basierend auf der PID-Korrektur."""
         base_speed = Config.MAX_SPEED * 0.01
-        left_speed = base_speed - correction
-        right_speed = base_speed + correction
+        left_speed = base_speed + correction
+        right_speed = base_speed - correction
 
         left_speed = max(min(left_speed, 1), -1)
         right_speed = max(min(right_speed, 1), -1)
 
-        set_motor('motor1', left_speed * 100)
-        set_motor('motor2', right_speed * 100)
+        set_motor('motor1', left_speed * 255)
+        set_motor('motor2', right_speed * 255)
 
     def check_stop_condition(self):
-        """Überprüft, ob der STOP_ALL-Befehl gesendet wurde oder die Client-Verbindung verloren ist."""
-        if not self.connection.is_connected:
+        """Überprüft, ob die Client-Verbindung verloren ist.
+            TODO STOP_ALL-Befehl gesendet wurde oder"""
+        if not self.is_connected:
             stop_all()
             print("client disconnected. Motors stopped.")
             return True  # Stop condition met
@@ -86,14 +88,22 @@ class PIDController:
     def run(self, setpoint):
         """Führt die Hauptregelungsschleife durch."""
         while True:
-            # Überprüfen, ob der STOP_ALL-Befehl gesendet wurde oder Verbindung verloren ist
-            if self.is_connected:
-                break  # Beende die Schleife, wenn eine Stopp-Bedingung erfüllt ist
+            try:
+                # Überprüfen, ob der STOP_ALL-Befehl gesendet wurde oder Verbindung verloren ist
+                if ((self.is_connected == False)):
+                    break  # Beende die Schleife, wenn eine Stopp-Bedingung erfüllt ist
 
-            # Position basierend auf Sensor-Array berechnen
-            sensor_position = self.calculate_position()
-            correction = self.pid_control(setpoint, sensor_position)
+                # Position basierend auf Sensor-Array berechnen
+                sensor_position = self.calculate_position()
+                correction = self.pid_control(setpoint, sensor_position)
 
-            # Motoren steuern
-            self.steer_motors_pid(correction)
+                # Motoren steuern
+                self.steer_motors_pid(correction)
+                print("Steering")
+                sleep(self.dt)
+            except KeyboardInterrupt:
+                print("Program interrupted. Closing connections...")
+            finally:
+                stop_all()
+                
 
