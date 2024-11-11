@@ -3,14 +3,14 @@ from time import sleep
 from config import Config
 
 
-motor1_forward = Pin(Config.MOTOR_PINS[0], Pin.OUT)
-motor1_backward = Pin(Config.MOTOR_PINS[1], Pin.OUT)
-motor2_forward = Pin(Config.MOTOR_PINS[2], Pin.OUT)
-motor2_backward = Pin(Config.MOTOR_PINS[3], Pin.OUT)
+motor1_forward = Pin(Config.MOTOR_PINS[1], Pin.OUT)
+motor1_backward = Pin(Config.MOTOR_PINS[0], Pin.OUT)
+motor2_forward = Pin(Config.MOTOR_PINS[3], Pin.OUT)
+motor2_backward = Pin(Config.MOTOR_PINS[2], Pin.OUT)
 
 # PWM für die Motoren festlegen
-pwm1 = PWM(Config.MOTOR_PINS[0])
-pwm2 = PWM(Config.MOTOR_PINS[2])
+pwm1 = PWM(Config.MOTOR_PINS[1])
+pwm2 = PWM(Config.MOTOR_PINS[3])
 
 # PWM-Frequenz setzen
 pwm1.freq(Config.PWM_FREQUENCY)
@@ -26,18 +26,19 @@ def set_motor(motor, speed):
     
     forward_pin = motor1_forward if motor == 'motor1' else motor2_forward
     backward_pin = motor1_backward if motor == 'motor1' else motor2_backward
-    
     # Begrenze die Geschwindigkeit auf einen Bereich von -100 bis 100
-    speed = max(-100, min(100, speed))
+    speed = max(-255, min(255, speed))
 
     if speed > 0:
         # Vorwärtslauf
         forward_pin.on()
         backward_pin.off()
+        duty_cycle = int((speed / 255) * 65535)
     elif speed < 0:
         # Rückwärtslauf
         forward_pin.off()
         backward_pin.on()
+        duty_cycle = int(((255 + speed) / 255) * 65535)
     else:
         # Stoppe den Motor
         forward_pin.off()
@@ -45,10 +46,7 @@ def set_motor(motor, speed):
         pwm1.duty_u16(0) if motor == 'motor1' else pwm2.duty_u16(0)
         return
     
-     # Berechne das Duty-Cycle-Verhältnis (0 bis 65535 für 100% PWM)
-    duty_cycle = int((speed / 100) * 65535)
-    
-   # Wähle das richtige PWM-Objekt für den Motor
+    print(f"Motor: {motor}, Speed: {speed}, Duty Cycle: {duty_cycle}")
     if motor == 'motor1':
         pwm1.duty_u16(duty_cycle)
     elif motor == 'motor2':
@@ -76,11 +74,11 @@ def turn(direction, speed):
     :param speed: Geschwindigkeit (0 bis 100)
     """
     if direction == 'left':
-        set_motor('motor1', 'forward', speed)
-        set_motor('motor2', 'backward', speed)
+        set_motor('motor1', -speed)  # Motor 1 vorwärts
+        set_motor('motor2', speed)    # Motor 2 rückwärts
     elif direction == 'right':
-        set_motor('motor1', 'backward', speed)
-        set_motor('motor2', 'forward', speed)
+        set_motor('motor1', speed)     # Motor 1 rückwärts
+        set_motor('motor2', -speed)    # Motor 2 vorwärts
 
 def turn_angle(angle):
     """
@@ -105,4 +103,5 @@ def drive(angle, speed):
     else:
          set_motor('motor1', speed * (1 + angle / 128))
          set_motor('motor2', speed)
+
 

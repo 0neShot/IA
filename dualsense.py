@@ -52,3 +52,4 @@ class Dualsense(pydualsense):
     def circlePressed(self, state):
         if (self.controller_input):
             self.client.sendCommand(Config.STARTPID)
+            self.controller_input = False
