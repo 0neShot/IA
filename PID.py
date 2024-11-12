@@ -90,8 +90,8 @@ class PIDController:
         while True:
             try:
                 # Überprüfen, ob der STOP_ALL-Befehl gesendet wurde oder Verbindung verloren ist
-                if ((self.is_connected == False)):
-                    break  # Beende die Schleife, wenn eine Stopp-Bedingung erfüllt ist
+                # if ((self.is_connected == False)):
+                    # break  # Beende die Schleife, wenn eine Stopp-Bedingung erfüllt ist
 
                 # Position basierend auf Sensor-Array berechnen
                 sensor_position = self.calculate_position()
