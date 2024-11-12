@@ -12,19 +12,19 @@ class Config:
     
     "Motor Definitions"
     PWM_FREQUENCY = 40
-    TURNSPEED = 20 # % of maximum turn speed
+    TURNSPEED = 10 # % of maximum turn speed
     DEGREES_PER_SECOND = 90 # Supposed turn angle per second in degrees
     MOTOR_PINS = [13,12,11,10] # Motor_1_forwad, Motor_1_backward, Motor_2_forwad, Motor_2_backward
     
     "Constants for PID"
-    KP = 1.0
-    KI = 0
-    KD = 0.0
-    MAX_SPEED = 10 # % of maximum used speed for PID (0-100)
+    KP = 0.45
+    KI = 0.2
+    KD = 0.01
+    MAX_SPEED = 70 # % of maximum used speed for PID (0-100)
     
     "Wifi Connection Settings"
-    SSID = 'DESKTOP-12QN0M'
-    PASSWORD = '6d]9129K'
+    SSID = 'CHRISTOPHER 9603'
+    PASSWORD = '2s65Y88+'
     
     def set_variable(self, variable, new_value):
         if hasattr(self, variable):  # Check if variable exists
@@ -32,3 +32,4 @@ class Config:
             print(f"{variable} changed to: {new_value}")
         else:
             print(f"Variable {variable} doesnt exist.")
+
