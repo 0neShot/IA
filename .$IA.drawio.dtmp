@@ -348,19 +348,19 @@
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="FwBJYNypRO_B-OtxUCzp-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="FwBJYNypRO_B-OtxUCzp-1" target="FwBJYNypRO_B-OtxUCzp-2">
+        <mxCell id="FwBJYNypRO_B-OtxUCzp-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=3;strokeColor=#0D0D0D;" edge="1" parent="1" source="FwBJYNypRO_B-OtxUCzp-1" target="FwBJYNypRO_B-OtxUCzp-2">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="FwBJYNypRO_B-OtxUCzp-1" value="Sensordaten" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="FwBJYNypRO_B-OtxUCzp-1" value="&lt;font color=&quot;#141414&quot;&gt;Sensordaten&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#000000;strokeWidth=3;" vertex="1" parent="1">
           <mxGeometry x="220" y="100" width="90" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="FwBJYNypRO_B-OtxUCzp-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="FwBJYNypRO_B-OtxUCzp-2" target="FwBJYNypRO_B-OtxUCzp-4">
+        <mxCell id="FwBJYNypRO_B-OtxUCzp-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#0D0D0D;strokeWidth=3;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;" edge="1" parent="1" source="FwBJYNypRO_B-OtxUCzp-2" target="FwBJYNypRO_B-OtxUCzp-4">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="FwBJYNypRO_B-OtxUCzp-2" value="Algorithmus" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+        <mxCell id="FwBJYNypRO_B-OtxUCzp-2" value="&lt;font color=&quot;#171717&quot;&gt;Algorithmus&lt;/font&gt;" style="whiteSpace=wrap;html=1;aspect=fixed;rounded=1;strokeColor=#000000;strokeWidth=3;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=#eeeeee;" vertex="1" parent="1">
           <mxGeometry x="360" y="85" width="80" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="FwBJYNypRO_B-OtxUCzp-4" value="Steuerung" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="FwBJYNypRO_B-OtxUCzp-4" value="&lt;font color=&quot;#000000&quot;&gt;Steuerung&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#000000;strokeWidth=3;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=#eeeeee;" vertex="1" parent="1">
           <mxGeometry x="495" y="100" width="90" height="50" as="geometry" />
         </mxCell>
       </root>
