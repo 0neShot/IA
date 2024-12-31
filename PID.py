@@ -1,109 +1,77 @@
-from machine import Pin
 from time import sleep
 from motor_controll import set_motor, stop_all
 from config import Config
 
 class PIDController:
-    def __init__(self, is_connected):
-        # Initialisiere 5 digitale IR-Sensoren auf festgelegten Pins
-        self.sensor_pins = [Pin(pin, Pin.IN) for pin in Config.IR_SENSOR_PINS]
-        self.board_led = Pin(Config.ONBORDLED_PIN, Pin.OUT)
+    """
+    Implements a PID controller for line tracking.
+    """
 
-        # PID Variablen
+    def __init__(self, is_connected):
+        """
+        Initializes the PID controller with sensor settings and initial values.
+
+        Args:
+            is_connected (bool): Connection status to the client.
+        """
         self.previous_error = 0
         self.integral = 0
-        self.integral_limit = 10
-        self.dt = 0.01
         self.is_connected = is_connected
+        self.dt = 0.01
+        self.integral_limit = 10
 
-    def get_sensor_values(self):
-        """Liest die Werte aller digitalen IR-Sensoren aus."""
-        return [sensor.value() for sensor in self.sensor_pins]
-
-    def calculate_position(self):
+    def calculate_pid(self, setpoint, current_value):
         """
-        Berechnet die Position der Linie basierend auf den aktiven Sensoren.
-        Gibt einen Wert zurück, der angibt, wie weit der Roboter von der Linie entfernt ist.
+        Calculates PID correction.
+
+        Args:
+            setpoint (float): Desired target value.
+            current_value (float): Current measured value.
+
+        Returns:
+            float: PID output for correction.
         """
-        sensor_values = self.get_sensor_values()
-        
-        # Gewichte für die Position jedes Sensors im Array
-        weights = [-2, -1, 0, 1, 2]
-        
-        # Berechne die gewichtete Summe basierend auf aktiven Sensoren
-        weighted_sum = sum(w * v for w, v in zip(weights, sensor_values))
-        
-        # Zähle die aktiven Sensoren
-        active_sensors = sum(sensor_values)
+        error = setpoint - current_value
 
-        # Berechne die mittlere Position der Linie
-        if active_sensors == 0:
-            return 0  # Standardwert, wenn keine Linie erkannt wird
-        else:
-            return weighted_sum / active_sensors
+        # Proportional
+        p_term = Config.KP * error
 
-    def pid_control(self, setpoint, sensor_position):
-        """Führt die PID-Regelung basierend auf der Abweichung von der Linie durch."""
-        error = setpoint - sensor_position
-
-        # Berechne die Regelanteile
-        P = Config.KP * error
-
+        # Integral
         self.integral += error * self.dt
         self.integral = max(min(self.integral, self.integral_limit), -self.integral_limit)
-        I = Config.KI * self.integral
+        i_term = Config.KI * self.integral
 
-        derivative = (error - self.previous_error) / self.dt
-        D = Config.KD * derivative
-
-        # Gesamtausgabe berechnen
-        output = P + I + D
-
-        # Speichere den aktuellen Fehler für den nächsten Zyklus
+        # Derivative
+        d_term = Config.KD * (error - self.previous_error) / self.dt
         self.previous_error = error
 
-        return output
+        return p_term + i_term + d_term
 
-    def steer_motors_pid(self, correction):
-        """Steuert die Motoren basierend auf der PID-Korrektur."""
-        base_speed = Config.MAX_SPEED * 0.01
-        left_speed = base_speed + correction
-        right_speed = base_speed - correction
+    def execute(self, setpoint, current_value):
+        """
+        Executes PID control to adjust motor speeds.
 
-        left_speed = max(min(left_speed, 1), -1)
-        right_speed = max(min(right_speed, 1), -1)
+        Args:
+            setpoint (float): Target value.
+            current_value (float): Current value from sensors.
+        """
+        correction = self.calculate_pid(setpoint, current_value)
+        base_speed = Config.MAX_SPEED
 
-        set_motor('motor1', left_speed * 255)
-        set_motor('motor2', right_speed * 255)
+        left_speed = base_speed - correction
+        right_speed = base_speed + correction
 
-    def check_stop_condition(self):
-        """Überprüft, ob die Client-Verbindung verloren ist.
-            TODO STOP_ALL-Befehl gesendet wurde oder"""
+        set_motor('motor1', left_speed)
+        set_motor('motor2', right_speed)
+
+    def stop_if_disconnected(self):
+        """
+        Stops motors if the client is disconnected.
+
+        Returns:
+            bool: True if stopped, False otherwise.
+        """
         if not self.is_connected:
             stop_all()
-            print("client disconnected. Motors stopped.")
-            return True  # Stop condition met
-        return False  # No stop condition
-
-    def run(self, setpoint):
-        """Führt die Hauptregelungsschleife durch."""
-        while True:
-            try:
-                # Überprüfen, ob der STOP_ALL-Befehl gesendet wurde oder Verbindung verloren ist
-                # if ((self.is_connected == False)):
-                    # break  # Beende die Schleife, wenn eine Stopp-Bedingung erfüllt ist
-
-                # Position basierend auf Sensor-Array berechnen
-                sensor_position = self.calculate_position()
-                correction = self.pid_control(setpoint, sensor_position)
-
-                # Motoren steuern
-                self.steer_motors_pid(correction)
-                print("Steering")
-                sleep(self.dt)
-            except KeyboardInterrupt:
-                print("Program interrupted. Closing connections...")
-            finally:
-                stop_all()
-                
-
+            return True
+        return False
