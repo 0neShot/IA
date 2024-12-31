@@ -1,11 +1,9 @@
-from time import sleep
-from config import Config
-from motor_controll import set_motor, stop_all
+from motor_controll import stop_all
 from PID import PIDController
 
 def main():
     pid_controller = PIDController(is_connected=False)
-    
+
     setpoint = 0  # Mittige Position (Anpassbar je nach Line-Tracking-Konfiguration)
 
     # PID-Regelschleife ausführen
