@@ -1,6 +1,7 @@
 from machine import Pin, PWM
 from config import Config
 from time import sleep
+import logging
 
 # Initialize motor control pins
 motor1_forward = Pin(Config.MOTOR_PINS[0], Pin.OUT)
@@ -41,7 +42,7 @@ def set_motor(motor, speed):
         backward_pin.off()
         pwm.duty_u16(0)
 
-    print(f"Motor: {motor}, Speed: {speed}")
+    logging.debug(f"Motor: {motor}, Speed: {speed}")
 
 def stop_all():
     """Stops all motors."""
@@ -51,9 +52,11 @@ def stop_all():
     motor2_backward.off()
     pwm1.duty_u16(0)
     pwm2.duty_u16(0)
+    logging.info("All motors stopped.")
 
 def move(speed):
     """Moves both motors in the same direction."""
+    logging.info(f"Moving at speed: {speed}")
     set_motor('motor1', speed)
     set_motor('motor2', speed)
 
@@ -65,6 +68,7 @@ def turn(direction, speed):
         direction (str): 'left' or 'right'.
         speed (int): Speed value (0 to 255).
     """
+    logging.info(f"Turning {direction} at speed: {speed}")
     if direction == 'left':
         set_motor('motor1', -speed)
         set_motor('motor2', speed)
@@ -81,6 +85,7 @@ def turn_angle(angle):
     """
     time_to_turn = abs(angle) / Config.DEGREES_PER_SECOND
     direction = 'left' if angle > 0 else 'right'
+    logging.info(f"Turning {direction} for angle: {angle} degrees")
     turn(direction, Config.TURNSPEED)
     sleep(time_to_turn)
     stop_all()
@@ -93,6 +98,7 @@ def drive(angle, speed):
         angle (float): Steering angle (-128 to 128).
         speed (int): Base speed (0 to 255).
     """
+    logging.info(f"Driving at angle: {angle}, speed: {speed}")
     if angle > 0:
         set_motor('motor1', speed)
         set_motor('motor2', int(speed * (1 - angle / 128)))

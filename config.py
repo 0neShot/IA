@@ -1,8 +1,13 @@
+import logging
+
 class Config:
     """
     Configuration class for robot constants and settings.
     Update these values to suit your hardware and preferences.
     """
+
+    # Setup logging
+    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
     # Commands
     DRIVE = 1
