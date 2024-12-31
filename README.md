@@ -1,35 +1,53 @@
-# Welcome to Interdisziplinäres Arbeiten (IA)!
+# Interdisziplinäres Arbeiten (IA)
 
-Hi! This project is about controlling a robot with a PS5 Dualsense controller for testing, combined with a line follower algorithm.
-You can easily add commands for further needs off your project.
+This project demonstrates a robot control system integrating a PS5 DualSense controller with a Raspberry Pi Pico. It includes features for remote control and line-following capabilities using a PID controller.
 
-# Requirements
+## Features
+- **Controller Integration:** Utilize a PS5 DualSense controller for robot operations.
+- **Line Following:** Line tracking capability with a digital IR sensor array.
+- **Modular Design:** Configurable settings for sensors, motors, and PID parameters.
+- **Network Connection:** Seamless integration with local WiFi networks.
+- **Custom GUI:** Easy-to-use interface for remote operations.
 
-- PyDualsense: https://github.com/flok/pydualsense
-- Keyboard: https://thepythoncode.com/article/control-keyboard-python
-- CustomTkinter: https://github.com/TomSchimansky/CustomTkinter
 
-PyDualsense only works with **Windows or Linux!**
+## Requirements
+- **Hardware:** Raspberry Pi Pico, PS5 DualSense controller, IR sensor array, and DC motors.
+- **Libraries:**
+  - [PyDualSense](https://github.com/flok/pydualsense) - For controller support (Windows/Linux only).
+  - [CustomTkinter](https://github.com/TomSchimansky/CustomTkinter) - GUI framework.
+  - Python's built-in libraries for GPIO and PWM control.
 
-# QuickStart 
+## Setup Instructions
 
-TLDR: Edit config, upload files, connect to network and controller, start programm and drive 
+### Step 1: Configure Settings
+1. Open `config.py`.
+2. Update settings to match your hardware, including:
+   - Motor pins
+   - Sensor pins
+   - WiFi credentials.
 
-## Step 1
+### Step 2: Upload Files
+1. Transfer the following files to the Raspberry Pi Pico:
+   - `config.py`
+   - `main.py`
+   - `PiConnectionPC.py`
+   - `motor_controll.py`
+   - `PID.py`
 
- - Edit the Config.py to fit your model configuration (sensors, motorpins, …). 
- - Enter your network credentials (hotspot or lokal network)!
+### Step 3: Connect to Network
+1. Power on the Raspberry Pi Pico.
+2. Wait for the onboard LED to turn green, indicating a successful network connection.
 
-## Step 2
+### Step 4: Run the Controller
+1. Execute `LocalPC.py` on your computer.
+2. Ensure the controller vibrates to confirm a connection.
 
- - Upload config.py, main.py, picommunicationPc.py, motorControl.py and PID.py to the raspberry pico.
+## Usage
+1. Connect the robot to power.
+2. Use the GUI to send commands via the DualSense controller.
+3. Adjust PID parameters and motor speeds for optimal performance.
 
-## Final Step
-
- - Wait for the pico to connect to your network. When it is connected the led will turn green.
- - Start LocalPC.py. The controller will vibrate if the connection is
-   successful and a GUI will open
-
-# Documentation
-
-Documentation will follow
+## Future Enhancements
+- Expanded sensor support.
+- Improved error handling and robustness.
+- Enhanced documentation.
